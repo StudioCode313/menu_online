@@ -3,13 +3,18 @@ from .models import Category, MenuItem, Tabel
 
 def menu_list(request):
     categories = Category.objects.prefetch_related('items').all()
-    return render(request, 'menu/menu.html', {'categories': categories})
+    tabel = Tabel.objects.all()
+    context = {
+        'categories': categories,
+        'tables': tabel,
+    }
+    return render(request, 'menu/menu.html', context)
 
 def menu_view(request, tabel_slug):
-    tabel = get_object_or_404(Tabel, slug=tabel_slug,  is_active=True)
+    tabel = Tabel.objects.get(number=tabel_slug)
     foods = MenuItem.objects.filter(is_available=True)
     context = {
         'foods': foods,
-        'tabel': tabel,
+        'tables': tabel,
     }
     return render(request, 'menu/menu.html', context)
